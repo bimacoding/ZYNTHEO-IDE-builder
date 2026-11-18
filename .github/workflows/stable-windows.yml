@@ -21,12 +21,12 @@ on:
   repository_dispatch:
     types: [stable]
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
     - '**/*.md'
     - 'upstream/*.json'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
     - '**/*.md'
 
@@ -35,6 +35,7 @@ env:
   ASSETS_REPOSITORY: ${{ github.repository_owner }}/ZYNTHEO-IDE
   BINARY_NAME: zyntheo
   GH_REPO_PATH: ${{ github.repository_owner }}/ZYNTHEO-IDE
+  GITHUB_BRANCH: main
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/ZYNTHEO-IDE-versions
@@ -173,7 +174,7 @@ jobs:
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
-      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
+      SHOULD_DEPLOY: ${{ github.event.inputs.generate_assets == 'true' && 'no' || needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
@@ -261,14 +262,14 @@ jobs:
 
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }} # Void bumped this to stronger
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
         env:
           FORCE_UPDATE: ${{ github.event.inputs.force_version }}
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
