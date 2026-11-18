@@ -32,14 +32,14 @@ on:
 
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-  APP_NAME: Void
-  ASSETS_REPOSITORY: ${{ github.repository_owner }}/binaries
-  BINARY_NAME: void
+  APP_NAME: Zyntheo
+  ASSETS_REPOSITORY: ${{ github.repository_owner }}/ZYNTHEO-IDE
+  BINARY_NAME: zyntheo
   DISABLE_UPDATE: 'yes'
-  GH_REPO_PATH: ${{ github.repository_owner }}/binaries
+  GH_REPO_PATH: ${{ github.repository_owner }}/ZYNTHEO-IDE
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: linux
-  VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+  VERSIONS_REPOSITORY: ${{ github.repository_owner }}/ZYNTHEO-IDE-versions
   VSCODE_QUALITY: stable
 
 jobs:
