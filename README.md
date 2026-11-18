@@ -14,4 +14,4 @@ Zyntheo no longer depends on `voideditor/void`, `voideditor/binaries`, or `voide
 
 ## Heritage
 
-This repository started as a fork of [voideditor/void-builder](https://github.com/voideditor/void-builder) (itself a VSCodium fork). Runtime and packaging now target Zyntheo only.
+This repository started from [voideditor/void-builder](https://github.com/voideditor/void-builder) (itself a VSCodium fork) and left that GitHub fork network on 2026-11-19 (`isFork: false`). Runtime and packaging now target Zyntheo only.
