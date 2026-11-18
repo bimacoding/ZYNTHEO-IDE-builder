@@ -54,10 +54,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - runner: macos-15
+            vscode_arch: arm64
           - runner: macos-13
             vscode_arch: x64
-          - runner: macos-14
-            vscode_arch: arm64
 
     steps:
       - uses: actions/checkout@v4
@@ -93,9 +93,10 @@ jobs:
 
       - name: Check existing VSCodium tags/releases
         env:
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: . check_tags.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
 
       - name: Build
         env:
@@ -129,11 +130,12 @@ jobs:
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
+        if: always() && env.SHOULD_BUILD == 'yes'
         with:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+          if-no-files-found: warn
 
       - name: Clean up keychain
         if: always()

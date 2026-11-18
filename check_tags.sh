@@ -16,10 +16,15 @@ GH_HOST="${GH_HOST:-github.com}"
 
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
-# Always build and deploy for initial setup
+# Always build from main. Deploy only when this is not an assets-only run.
 echo "Always building from main branch"
 export SHOULD_BUILD="yes"
-export SHOULD_DEPLOY="yes"
+if [[ "${GENERATE_ASSETS}" == "true" ]]; then
+  echo "Assets-only run; skip GitHub release publish"
+  export SHOULD_DEPLOY="no"
+else
+  export SHOULD_DEPLOY="yes"
+fi
 
 # Set all build flags to "yes" by default
 export SHOULD_BUILD_APPIMAGE="yes"
@@ -27,8 +32,9 @@ export SHOULD_BUILD_DEB="yes"
 export SHOULD_BUILD_DMG="yes"
 export SHOULD_BUILD_EXE_SYS="yes"
 export SHOULD_BUILD_EXE_USR="yes"
-export SHOULD_BUILD_MSI="yes"
-export SHOULD_BUILD_MSI_NOUP="yes"
+# MSI templates still reference VOID.EXE; ship Inno Setup + zip instead.
+export SHOULD_BUILD_MSI="no"
+export SHOULD_BUILD_MSI_NOUP="no"
 export SHOULD_BUILD_REH="yes"
 export SHOULD_BUILD_REH_WEB="yes"
 export SHOULD_BUILD_RPM="yes"

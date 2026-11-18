@@ -76,6 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: 'yes'
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_tags.sh
 
   compile:
@@ -206,7 +207,8 @@ jobs:
 
       - name: Check existing VSCodium tags/releases
         env:
-          DISABLE_MSI: ${{ vars.DISABLE_STABLE_MSI }}
+          DISABLE_MSI: 'yes'
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_BUILD == 'yes'
@@ -276,11 +278,12 @@ jobs:
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
+        if: always() && env.SHOULD_BUILD == 'yes'
         with:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+          if-no-files-found: warn
 
   # Void commented this - we should re-add it eventually
   # winget:
