@@ -16,7 +16,8 @@ else
 fi
 
 TUNNEL_APPLICATION_NAME="$( node -p "require(\"../product.json\").tunnelApplicationName" )"
-NAME_SHORT="$( node -p "require(\"../product.json\").nameShort" )"
+# Electron packages the macOS bundle as "${nameLong}.app" (Zyntheo IDE.app).
+NAME_LONG="$( node -p "require(\"../product.json\").nameLong" )"
 
 npm pack @vscode/openssl-prebuilt@0.0.11
 mkdir openssl
@@ -34,7 +35,13 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
   cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
 
-  cp "target/${VSCODE_CLI_TARGET}/release/code" "../../VSCode-darwin-${VSCODE_ARCH}/${NAME_SHORT}.app/Contents/Resources/app/bin/${TUNNEL_APPLICATION_NAME}"
+  APP_BUNDLE="../../VSCode-darwin-${VSCODE_ARCH}/${NAME_LONG}.app"
+  if [[ ! -d "${APP_BUNDLE}" ]]; then
+    echo "macOS app bundle not found at ${APP_BUNDLE}"
+    ls -la "../../VSCode-darwin-${VSCODE_ARCH}" || true
+    exit 1
+  fi
+  cp "target/${VSCODE_CLI_TARGET}/release/code" "${APP_BUNDLE}/Contents/Resources/app/bin/${TUNNEL_APPLICATION_NAME}"
 elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
     VSCODE_CLI_TARGET="aarch64-pc-windows-msvc"
