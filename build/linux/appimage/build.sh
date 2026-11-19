@@ -7,14 +7,32 @@ CALLER_DIR=$( pwd )
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  GITHUB_RESPONSE=$( curl --silent --location "https://api.github.com/repos/AppImage/pkg2appimage/releases/latest" )
-  APPIMAGE_URL=$( echo "${GITHUB_RESPONSE}" | jq --raw-output '.assets | map(select( .name | test("x86_64.AppImage(?!.zsync)"))) | map(.browser_download_url)[0]' )
+  # Unauthenticated GitHub API calls from Actions runners often hit rate
+  # limits (HTTP 403). Prefer an authenticated request, then a known public
+  # continuous build URL so Deb/RPM packaging is not blocked.
+  PKG2APPIMAGE_FALLBACK_URL="https://github.com/AppImageCommunity/pkg2appimage/releases/download/continuous/pkg2appimage-1eceb30-x86_64.AppImage"
 
-  if [[ -z "${APPIMAGE_URL}" ]]; then
-    echo "The url for pkg2appimage.AppImage hasn't been found"
-    exit 1
+  fetch_pkg2appimage_url() {
+    local repo="$1"
+    local curl_args=(--silent --location --fail)
+    if [[ -n "${GITHUB_TOKEN}" ]]; then
+      curl_args+=(-H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json")
+    fi
+    local response
+    response=$( curl "${curl_args[@]}" "https://api.github.com/repos/${repo}/releases/latest" || true )
+    echo "${response}" | jq --raw-output '.assets | map(select( .name | test("x86_64.AppImage(?!.zsync)"))) | map(.browser_download_url)[0] // empty' 2>/dev/null || true
+  }
+
+  APPIMAGE_URL=$( fetch_pkg2appimage_url "AppImageCommunity/pkg2appimage" )
+  if [[ -z "${APPIMAGE_URL}" || "${APPIMAGE_URL}" == "null" ]]; then
+    APPIMAGE_URL=$( fetch_pkg2appimage_url "AppImage/pkg2appimage" )
+  fi
+  if [[ -z "${APPIMAGE_URL}" || "${APPIMAGE_URL}" == "null" ]]; then
+    echo "GitHub API did not return pkg2appimage URL; using fallback ${PKG2APPIMAGE_FALLBACK_URL}"
+    APPIMAGE_URL="${PKG2APPIMAGE_FALLBACK_URL}"
   fi
 
+  echo "Downloading pkg2appimage from ${APPIMAGE_URL}"
   wget -c "${APPIMAGE_URL}" -O pkg2appimage.AppImage
 
   chmod +x ./pkg2appimage.AppImage

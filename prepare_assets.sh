@@ -167,7 +167,10 @@ else
   fi
 
   if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
-    . ../build/linux/appimage/build.sh
+    if ! . ../build/linux/appimage/build.sh; then
+      echo "WARNING: AppImage build failed; continuing with DEB/RPM/TAR assets"
+      SHOULD_BUILD_APPIMAGE="no"
+    fi
   fi
 
   cd ..
