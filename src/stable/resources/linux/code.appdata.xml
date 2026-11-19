@@ -4,15 +4,13 @@
 	<metadata_license>@@LICENSE@@</metadata_license>
 	<project_license>@@LICENSE@@</project_license>
 	<name>@@NAME_LONG@@</name>
-	<url type="homepage">https://www.vscodium.com</url>
-	<summary>VSCodium. Code editing. Redefined.</summary>
+	<url type="homepage">https://github.com/bimacoding/ZYNTHEO-IDE</url>
+	<summary>Zyntheo IDE. Code editing with an AI agent.</summary>
 	<description>
-		<p>VSCodium is a community-driven, freely-licensed binary distribution of Microsoft's editor VS Code.</p>
+		<p>Zyntheo IDE is an AI-powered code editor that runs on GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, and Wayland compositors. See https://github.com/bimacoding/ZYNTHEO-IDE/releases for Linux packages.</p>
 	</description>
-	<screenshots>
-		<screenshot type="default">
-			<image>https://www.vscodium.com/img/vscodium.png</image>
-			<caption>Editing C</caption>
-		</screenshot>
-	</screenshots>
+	<launchable type="desktop-id">@@NAME@@.desktop</launchable>
+	<provides>
+		<binary>@@NAME@@</binary>
+	</provides>
 </component>

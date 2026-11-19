@@ -1,19 +1,21 @@
 [Desktop Entry]
 Name=@@NAME_LONG@@
-Comment=Code Editing. Redefined.
+Comment=AI-powered code editor
 GenericName=Text Editor
 Exec=@@EXEC@@ %F
 Icon=@@ICON@@
 Type=Application
-StartupNotify=false
+Terminal=false
+StartupNotify=true
 StartupWMClass=@@NAME_SHORT@@
 Categories=TextEditor;Development;IDE;
 MimeType=text/plain;inode/directory;application/x-@@NAME@@-workspace;
 Actions=new-empty-window;
-Keywords=vscodium;codium;vscode;
+Keywords=zyntheo;vscode;codium;code;ide;editor;
 
 [Desktop Action new-empty-window]
 Name=New Empty Window
+Name[cs]=Nové prázdné okno
 Name[de]=Neues leeres Fenster
 Name[es]=Nueva ventana vacía
 Name[fr]=Nouvelle fenêtre vide

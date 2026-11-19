@@ -1,12 +1,14 @@
 [Desktop Entry]
 Name=@@NAME_LONG@@ - URL Handler
-Comment=Code Editing. Redefined.
+Comment=AI-powered code editor
 GenericName=Text Editor
 Exec=@@EXEC@@ --open-url %U
 Icon=@@ICON@@
 Type=Application
 NoDisplay=true
+Terminal=false
 StartupNotify=true
+StartupWMClass=@@NAME_SHORT@@
 Categories=Utility;TextEditor;Development;IDE;
 MimeType=x-scheme-handler/@@URLPROTOCOL@@;
-Keywords=vscodium;codium;vscode;
+Keywords=zyntheo;vscode;codium;code;ide;editor;

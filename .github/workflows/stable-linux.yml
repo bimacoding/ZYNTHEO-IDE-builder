@@ -173,6 +173,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        # Desktop GUI packages for every major Linux desktop
+        # (GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, Wayland).
         - slug: X64
           vscode_arch: x64
           npm_arch: x64
@@ -181,22 +183,6 @@ jobs:
           vscode_arch: arm64
           npm_arch: arm64
           image: vscodium/vscodium-linux-build-agent:focal-arm64
-        - slug: ARM32
-          vscode_arch: armhf
-          npm_arch: arm
-          image: vscodium/vscodium-linux-build-agent:focal-armhf
-        - slug: RISCV64
-          vscode_arch: riscv64
-          npm_arch: riscv64
-          image: vscodium/vscodium-linux-build-agent:focal-riscv64
-        - slug: LOONG64
-          vscode_arch: loong64
-          npm_arch: loong64
-          image: vscodium/vscodium-linux-build-agent:beige-loong64
-        - slug: PPC64
-          vscode_arch: ppc64le
-          npm_arch: ppc64
-          image: vscodium/vscodium-linux-build-agent:focal-ppc64le
     container:
       image: ${{ matrix.image }}
     env:
@@ -326,7 +312,8 @@ jobs:
       SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+    # Desktop GUI releases skip remote-server (REH) artifacts.
+    if: github.event.inputs.generate_assets != 'true' && needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
       - uses: actions/checkout@v4
@@ -427,7 +414,8 @@ jobs:
       SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+    # Desktop GUI releases skip Alpine remote-server (REH) artifacts.
+    if: github.event.inputs.generate_assets != 'true' && needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
       - uses: actions/checkout@v4

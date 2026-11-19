@@ -33,10 +33,9 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
     sed -i 's|@@APPNAME@@|zyntheo-insiders|g' recipe.yml
     sed -i 's|@@ICON@@|zyntheo-insiders|g' recipe.yml
   else
-    # Void branding instead of default codium
     sed -i 's|@@NAME@@|Zyntheo|g' recipe.yml
     sed -i 's|@@APPNAME@@|zyntheo|g' recipe.yml
-    sed -i 's|@@ICON@@|zyntheo|g' recipe.yml
+    sed -i 's|@@ICON@@|zyntheo-editor|g' recipe.yml
   fi
 
   # workaround that enforces x86 ARCH for pkg2appimage having /__w/vscodium/vscodium/build/linux/appimage/VSCodium/VSCodium.AppDir/usr/share/codium/resources/app/node_modules/rc/index.js is of architecture armhf
@@ -45,7 +44,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   rm -f pkg2appimage-*.AppImage
   rm -rf pkg2appimage.AppDir
-  rm -rf Void* # Void had this commented out at one point
+  rm -rf Zyntheo* Void*
 fi
 
 cd "${CALLER_DIR}"
